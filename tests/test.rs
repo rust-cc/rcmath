@@ -16,4 +16,10 @@ mod tests {
         println!("{:?}", BigNum::min_value());
         assert_eq!(56, math::pow_mod(2, 2_u32.pow(31), 100))
     }
+
+    #[test]
+    fn test_big_num_operate() {
+        println!("{:?}", BigNum::min_value() + BigNum::min_value());
+        assert_eq!(56, math::pow_mod(2, 2_u32.pow(31), 100))
+    }
 }
