@@ -1,8 +1,9 @@
 use std::convert::From;
+use std::iter::Step;
 use std::ops::{Add, Div, Mul, Rem};
 
-pub fn pow<T: Clone + Mul<Output = T> + From<u32>>(x: T, y: usize) -> T {
-    (0..y).fold(1u32.into(), |acc, _| x.clone() * acc)
+pub fn pow<T: Clone + Mul<Output = T> + From<bool>, F: Step + From<bool>>(x: T, y: F) -> T {
+    (false.into()..y).fold(true.into(), |acc, _| x.clone() * acc)
 }
 
 pub fn pow_mod(x: u32, mut y: u32, z: u32) -> u32 {
