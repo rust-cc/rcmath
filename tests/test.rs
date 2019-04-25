@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
-    use sunzi::big_num::BigNum;
-    use sunzi::math;
+    use rcmath::big_num::BigNum;
+    use rcmath::math;
 
     #[test]
     fn test_pow() {

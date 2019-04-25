@@ -1,5 +1,5 @@
 # rcmath
-*Rust Cryptography math*
+*Rust Cryptography Math*
 
 (WIP)
 
