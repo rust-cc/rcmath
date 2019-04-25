@@ -20,22 +20,23 @@ pub fn pow_mod(x: u32, mut y: u32, z: u32) -> u32 {
     return t;
 }
 
-pub fn div_rem<T: Clone + Add + Div + Mul + Rem>(
-    x: T,
-    y: T,
-) -> (<T as Div>::Output, <T as Rem>::Output) {
+pub fn div_rem<T: Clone + Div + Rem>(x: T, y: T) -> (<T as Div>::Output, <T as Rem>::Output) {
     (x.clone() / y.clone(), x % y)
 }
 
-pub fn div(_x: u32, _y: u32) {}
+pub fn div<T: Clone + Div>(x: T, y: T) -> <T as Div>::Output {
+    x / y
+}
 
-pub fn rem(_x: u32, _y: u32) {}
+pub fn rem<T: Clone + Rem>(x: T, y: T) -> <T as Rem>::Output {
+    x % y
+}
 
 pub fn lcm(_x: u32, _y: u32) {}
 
 pub fn gcd(_x: u32, _y: u32) {}
 
-pub fn big_prime() {}
+pub fn big_num_prime() {}
 
 pub fn is_prime(_x: u32) {}
 
