@@ -1,5 +1,5 @@
-# sunzi 
-*better math for cryptography*
+# rcmath
+*Rust Cryptography math*
 
 (WIP)
 
