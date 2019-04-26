@@ -34,6 +34,7 @@ pub fn rem<T: Clone + Rem>(x: T, y: T) -> <T as Rem>::Output {
 
 pub fn lcm(_x: u32, _y: u32) {}
 
+/// greatest common divisor
 pub fn gcd(_x: u32, _y: u32) {}
 
 pub fn big_num_prime() {}

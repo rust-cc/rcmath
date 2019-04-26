@@ -22,6 +22,47 @@ mod tests {
     }
 
     #[test]
+    fn test_div() {
+        assert_eq!(
+            BigNum::u_new(vec![2]),
+            math::div(BigNum::u_new(vec![8]), BigNum::u_new(vec![3]))
+        );
+        assert_eq!(
+            BigNum::u_new(vec![4]),
+            math::div(BigNum::u_new(vec![8]), BigNum::u_new(vec![2]))
+        );
+        assert_eq!(
+            BigNum::u_new(vec![0]),
+            math::div(BigNum::u_new(vec![3]), BigNum::u_new(vec![4]))
+        );
+        assert_eq!(
+            BigNum::u_new(vec![8130]),
+            math::div(BigNum::u_new(vec![1000000]), BigNum::u_new(vec![123]))
+        );
+        //assert_eq!(8130, math::div(1000000, 123));
+    }
+
+    #[test]
+    fn test_rem() {
+        assert_eq!(
+            BigNum::u_new(vec![2]),
+            math::rem(BigNum::u_new(vec![8]), BigNum::u_new(vec![3]))
+        );
+        assert_eq!(
+            BigNum::u_new(vec![0]),
+            math::rem(BigNum::u_new(vec![8]), BigNum::u_new(vec![2]))
+        );
+        assert_eq!(
+            BigNum::u_new(vec![3]),
+            math::rem(BigNum::u_new(vec![3]), BigNum::u_new(vec![4]))
+        );
+        assert_eq!(
+            BigNum::u_new(vec![10]),
+            math::rem(BigNum::u_new(vec![1000000]), BigNum::u_new(vec![123]))
+        );
+    }
+
+    #[test]
     fn test_pow_mod() {
         assert_eq!(56, math::pow_mod(2, 2_u32.pow(31), 100));
     }

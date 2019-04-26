@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::fmt::{Debug, Display, Formatter, Result};
 use std::iter::Step;
-use std::ops::{Add, Mul, Range, Sub};
+use std::ops::{Add, Div, Mul, Range, Rem, Sub};
 
 use super::math;
 
@@ -129,6 +129,26 @@ impl BigNum {
 
     fn add_usize(&self, n: usize) -> BigNum {
         self + &BigNum::u_new(vec![n as Digest])
+    }
+
+    fn div_rem(&self, rhs: &BigNum) -> (BigNum, BigNum) {
+        if rhs == &BigNum::new_empty() {
+            panic!("Cannot divide by zero-valued !");
+        }
+        if self <= rhs {
+            return (BigNum::new_empty(), self.clone());
+        }
+
+        let mut total = BigNum::new_empty();
+        let mut step = BigNum::new_one();
+
+        while &total <= self {
+            step = &step + &BigNum::new_one();
+            total = &(&step + &BigNum::new_one()) * rhs;
+        }
+        let rem = self - &(&step * rhs);
+
+        (step, rem)
     }
 }
 
@@ -305,8 +325,52 @@ impl Mul for BigNum {
     }
 }
 
-// TODO /
-// TODO %
+impl Mul for &BigNum {
+    type Output = BigNum;
+
+    fn mul(self, rhs: &BigNum) -> BigNum {
+        rhs.range()
+            .fold(BigNum::new_empty(), |acc, _| self.clone() + acc)
+    }
+}
+
+// Div
+impl Div for BigNum {
+    // The division of rational numbers is a closed operation.
+    type Output = Self;
+
+    fn div(self, rhs: Self) -> Self {
+        self.div_rem(&rhs).0
+    }
+}
+
+impl Div for &BigNum {
+    // The division of rational numbers is a closed operation.
+    type Output = BigNum;
+
+    fn div(self, rhs: Self) -> BigNum {
+        self.div_rem(rhs).0
+    }
+}
+
+// Rem (mod)
+impl Rem for BigNum {
+    type Output = Self;
+
+    fn rem(self, rhs: Self) -> Self {
+        self.div_rem(&rhs).1
+    }
+}
+
+// Rem (mod)
+impl Rem for &BigNum {
+    type Output = BigNum;
+
+    fn rem(self, rhs: Self) -> BigNum {
+        self.div_rem(&rhs).1
+    }
+}
+
 // TODO &
 
 impl PartialOrd for BigNum {
