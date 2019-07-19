@@ -1,4 +1,4 @@
-[![Latest Version](https://img.shields.io/badge/crates.io-v0.0.3-green.svg)](https://crates.io/crates/rckad)
+[![Latest Version](https://img.shields.io/badge/crates.io-v0.0.0-green.svg)](https://crates.io/crates/rcmath)
 
 # rcmath
 *Rust Cryptography Math*

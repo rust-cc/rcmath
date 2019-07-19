@@ -3,5 +3,11 @@ name = "rcmath"
 version = "0.0.1"
 authors = ["Sun <huachuang20@gmail.com>"]
 edition = "2018"
+readme = "README.md"
+description = "Better math for cryptography in pure Rust."
+repository = "https://github.com/rust-cc/rcmath"
+keywords = ["math", "cryptography"]
+license = "MIT/Apache-2.0"
 
 [dependencies]
+num-bigint = "0.2"
