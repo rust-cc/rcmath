@@ -1,21 +1,21 @@
 [![Latest Version](https://img.shields.io/badge/crates.io-v0.0.0-green.svg)](https://crates.io/crates/rcmath)
 
 # rcmath
-*Rust Cryptography Math*
+*Rust Cryptographic Math Library*
 
-- [x] math: pow
-- [ ] math: pow_mod
-- [x] math: div
-- [x] math: rem
-- [x] math: div_rem
-- [ ] math: lcm
-- [ ] math: gcd
-- [ ] math: big_num_prime
-- [ ] math: is_prime
-- [ ] math: is_odd
-- [ ] math: is_even
+#### Core
+- [x] Big unsigned integer (**uint**): Like: U256, U512, U1024, U2048, U4096.
+- [x] Finite field (**ff**)
+- [x] Group (**group**)
+- [x] Pairing curves (**pairing**)
+- [x] Fast Fourier transform (**fft**)
 
-*all math function can use all interger type and big_num*
+#### Auxiliary
+- [x] no-std
+- [x] parallel
+- [] serde
+- [] simd
+- [] asm
 
 ## License
 
