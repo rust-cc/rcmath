@@ -13,9 +13,9 @@
 #### Auxiliary
 - [x] no-std
 - [x] parallel
-- [] serde
-- [] simd
-- [] asm
+- [ ] serde
+- [ ] simd
+- [ ] asm
 
 ## License
 
