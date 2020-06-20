@@ -5,16 +5,12 @@ use core::{
 };
 use num_traits::Zero;
 
-use crate::{
-    bytes::{FromBytes, ToBytes},
-    ff::PrimeField,
-    UniformRand,
-};
+use crate::{ff::PrimeField, UniformRand};
 
 pub trait Group:
-    ToBytes
-    + 'static
-    + FromBytes
+    'static
+    + serde::ser::Serialize
+    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Debug

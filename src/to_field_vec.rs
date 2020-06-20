@@ -5,10 +5,8 @@ use crate::{
         twisted_edwards_extended::{GroupAffine as TEAffine, GroupProjective as TEProjective},
     },
     uint::Uint,
-    Box, Field, Fp2, Fp2Parameters, FpParameters, PrimeField, Vec,
+    Box, Error, Field, Fp2, Fp2Parameters, FpParameters, PrimeField, Vec,
 };
-
-type Error = Box<dyn crate::Error>;
 
 /// Types that can be converted to a vector of `F` elements. Useful for
 /// specifying how public inputs to a constraint system should be represented

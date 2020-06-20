@@ -1,6 +1,6 @@
 macro_rules! uint_impl {
     ($name:ident, $num_limbs:expr) => {
-        #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Hash)]
+        #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Hash, Serialize, Deserialize)]
         pub struct $name(pub [u64; $num_limbs]);
 
         impl $name {
@@ -198,19 +198,29 @@ macro_rules! uint_impl {
 
                 res
             }
-        }
 
-        impl ToBytes for $name {
             #[inline]
-            fn write<W: Write>(&self, writer: W) -> IoResult<()> {
-                self.0.write(writer)
+            fn from_bytes(bytes: &[u8]) -> crate::Result<Self> {
+                if bytes.len() > $num_limbs * 8 {
+                    return Err(crate::Error("Too many bytes when call from_bytes"));
+                }
+
+                let mut value = [0u64; $num_limbs];
+                for i in 0..$num_limbs {
+                    let u64_bytes = [0u8; 8];
+                    u64_bytes.copy_from_slice(&bytes[i * 8..(i + 1) * 8]);
+                    value[i] = u64::from_le_bytes(u64_bytes);
+                }
+                Ok(Self(value))
             }
-        }
 
-        impl FromBytes for $name {
             #[inline]
-            fn read<R: Read>(reader: R) -> IoResult<Self> {
-                <[u64; $num_limbs]>::read(reader).map(Self::new)
+            fn to_bytes(&self) -> Vec<u8> {
+                let mut bytes: Vec<u8> = Vec::new();
+                for i in 0..$num_limbs {
+                    bytes.extend(&self.0[i].to_le_bytes());
+                }
+                bytes
             }
         }
 

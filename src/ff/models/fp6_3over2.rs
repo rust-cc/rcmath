@@ -9,12 +9,9 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use serde::{Deserialize, Serialize};
 
-use crate::{
-    bytes::{FromBytes, ToBytes},
-    io::{Read, Result as IoResult, Write},
-    UniformRand,
-};
+use crate::UniformRand;
 
 use super::{Field, Fp2, Fp2Parameters};
 
@@ -34,7 +31,7 @@ pub trait Fp6Parameters: 'static + Send + Sync + Copy {
 }
 
 /// An element of Fp6, represented by c0 + c1 * v + c2 * v^(2).
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Default(bound = "P: Fp6Parameters"),
     Hash(bound = "P: Fp6Parameters"),
@@ -474,24 +471,5 @@ impl<P: Fp6Parameters> From<u16> for Fp6<P> {
 impl<P: Fp6Parameters> From<u8> for Fp6<P> {
     fn from(other: u8) -> Self {
         Self::new(other.into(), Fp2::zero(), Fp2::zero())
-    }
-}
-
-impl<P: Fp6Parameters> ToBytes for Fp6<P> {
-    #[inline]
-    fn write<W: Write>(&self, mut writer: W) -> IoResult<()> {
-        self.c0.write(&mut writer)?;
-        self.c1.write(&mut writer)?;
-        self.c2.write(&mut writer)
-    }
-}
-
-impl<P: Fp6Parameters> FromBytes for Fp6<P> {
-    #[inline]
-    fn read<R: Read>(mut reader: R) -> IoResult<Self> {
-        let c0 = Fp2::read(&mut reader)?;
-        let c1 = Fp2::read(&mut reader)?;
-        let c2 = Fp2::read(&mut reader)?;
-        Ok(Fp6::new(c0, c1, c2))
     }
 }

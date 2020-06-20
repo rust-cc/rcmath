@@ -1,9 +1,8 @@
 use core::ops::Neg;
+use serde::{Deserialize, Serialize};
 
 use crate::{
-    bytes::ToBytes,
     ff::{BitIterator, Field},
-    io::{Result as IoResult, Write},
     pairing::{
         curves::SWModelParameters,
         short_weierstrass_jacobian::{GroupAffine, GroupProjective},
@@ -17,7 +16,7 @@ use super::{BW6Parameters, TwistType};
 pub type G2Affine<P> = GroupAffine<<P as BW6Parameters>::G2Parameters>;
 pub type G2Projective<P> = GroupProjective<<P as BW6Parameters>::G2Parameters>;
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Clone(bound = "P: BW6Parameters"),
     Debug(bound = "P: BW6Parameters"),
@@ -47,22 +46,6 @@ struct G2HomProjective<P: BW6Parameters> {
 impl<P: BW6Parameters> Default for G2Prepared<P> {
     fn default() -> Self {
         Self::from(G2Affine::<P>::prime_subgroup_generator())
-    }
-}
-
-impl<P: BW6Parameters> ToBytes for G2Prepared<P> {
-    fn write<W: Write>(&self, mut writer: W) -> IoResult<()> {
-        for coeff_1 in &self.ell_coeffs_1 {
-            coeff_1.0.write(&mut writer)?;
-            coeff_1.1.write(&mut writer)?;
-            coeff_1.2.write(&mut writer)?;
-        }
-        for coeff_2 in &self.ell_coeffs_2 {
-            coeff_2.0.write(&mut writer)?;
-            coeff_2.1.write(&mut writer)?;
-            coeff_2.2.write(&mut writer)?;
-        }
-        self.infinity.write(writer)
     }
 }
 

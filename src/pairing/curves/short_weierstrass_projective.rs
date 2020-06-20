@@ -7,18 +7,17 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use serde::{Deserialize, Serialize};
 
 use crate::{
-    bytes::{FromBytes, ToBytes},
     ff::{BitIterator, Field, PrimeField, SquareRootField},
-    io::{Read, Result as IoResult, Write},
     pairing::{AffineCurve, ProjectiveCurve},
     One, UniformRand, Vec, Zero,
 };
 
 use super::{flags::SWFlags, SWModelParameters as Parameters};
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Copy(bound = "P: Parameters"),
     Clone(bound = "P: Parameters"),
@@ -194,25 +193,6 @@ impl<P: Parameters> Neg for GroupAffine<P> {
     }
 }
 
-impl<P: Parameters> ToBytes for GroupAffine<P> {
-    #[inline]
-    fn write<W: Write>(&self, mut writer: W) -> IoResult<()> {
-        self.x.write(&mut writer)?;
-        self.y.write(&mut writer)?;
-        self.infinity.write(writer)
-    }
-}
-
-impl<P: Parameters> FromBytes for GroupAffine<P> {
-    #[inline]
-    fn read<R: Read>(mut reader: R) -> IoResult<Self> {
-        let x = P::BaseField::read(&mut reader)?;
-        let y = P::BaseField::read(&mut reader)?;
-        let infinity = bool::read(reader)?;
-        Ok(Self::new(x, y, infinity))
-    }
-}
-
 impl<P: Parameters> Default for GroupAffine<P> {
     #[inline]
     fn default() -> Self {
@@ -220,7 +200,7 @@ impl<P: Parameters> Default for GroupAffine<P> {
     }
 }
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Copy(bound = "P: Parameters"),
     Clone(bound = "P: Parameters"),
@@ -267,25 +247,6 @@ impl<P: Parameters> Distribution<GroupProjective<P>> for Standard {
         res.mul_assign(P::ScalarField::rand(rng));
         debug_assert!(GroupAffine::from(res).is_in_correct_subgroup_assuming_on_curve());
         res
-    }
-}
-
-impl<P: Parameters> ToBytes for GroupProjective<P> {
-    #[inline]
-    fn write<W: Write>(&self, mut writer: W) -> IoResult<()> {
-        self.x.write(&mut writer)?;
-        self.y.write(&mut writer)?;
-        self.z.write(writer)
-    }
-}
-
-impl<P: Parameters> FromBytes for GroupProjective<P> {
-    #[inline]
-    fn read<R: Read>(mut reader: R) -> IoResult<Self> {
-        let x = P::BaseField::read(&mut reader)?;
-        let y = P::BaseField::read(&mut reader)?;
-        let z = P::BaseField::read(reader)?;
-        Ok(Self::new(x, y, z))
     }
 }
 

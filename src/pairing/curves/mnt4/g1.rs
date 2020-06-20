@@ -1,6 +1,6 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{
-    bytes::ToBytes,
-    io::{Result as IoResult, Write},
     pairing::{
         short_weierstrass_jacobian::{GroupAffine, GroupProjective},
         AffineCurve,
@@ -13,7 +13,7 @@ use super::MNT4Parameters;
 pub type G1Affine<P> = GroupAffine<<P as MNT4Parameters>::G1Parameters>;
 pub type G1Projective<P> = GroupProjective<<P as MNT4Parameters>::G1Parameters>;
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Clone(bound = "P: MNT4Parameters"),
     Debug(bound = "P: MNT4Parameters"),
@@ -47,14 +47,5 @@ impl<P: MNT4Parameters> From<G1Affine<P>> for G1Prepared<P> {
 impl<P: MNT4Parameters> Default for G1Prepared<P> {
     fn default() -> Self {
         Self::from(G1Affine::<P>::prime_subgroup_generator())
-    }
-}
-
-impl<P: MNT4Parameters> ToBytes for G1Prepared<P> {
-    fn write<W: Write>(&self, mut writer: W) -> IoResult<()> {
-        self.x.write(&mut writer)?;
-        self.y.write(&mut writer)?;
-        self.x_twist.write(&mut writer)?;
-        self.y_twist.write(&mut writer)
     }
 }

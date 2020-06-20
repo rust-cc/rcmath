@@ -10,12 +10,9 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use serde::{Deserialize, Serialize};
 
-use crate::{
-    bytes::{FromBytes, ToBytes},
-    io::{Read, Result as IoResult, Write},
-    UniformRand, Vec,
-};
+use crate::{UniformRand, Vec};
 
 use super::{Field, LegendreSymbol, PrimeField, SquareRootField};
 
@@ -37,7 +34,7 @@ pub trait Fp3Parameters: 'static + Send + Sync {
     }
 }
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Default(bound = "P: Fp3Parameters"),
     Hash(bound = "P: Fp3Parameters"),
@@ -332,25 +329,6 @@ impl<P: Fp3Parameters> From<u8> for Fp3<P> {
     fn from(other: u8) -> Self {
         let fe: P::Fp = other.into();
         Self::new(fe, P::Fp::zero(), P::Fp::zero())
-    }
-}
-
-impl<P: Fp3Parameters> ToBytes for Fp3<P> {
-    #[inline]
-    fn write<W: Write>(&self, mut writer: W) -> IoResult<()> {
-        self.c0.write(&mut writer)?;
-        self.c1.write(&mut writer)?;
-        self.c2.write(writer)
-    }
-}
-
-impl<P: Fp3Parameters> FromBytes for Fp3<P> {
-    #[inline]
-    fn read<R: Read>(mut reader: R) -> IoResult<Self> {
-        let c0 = P::Fp::read(&mut reader)?;
-        let c1 = P::Fp::read(&mut reader)?;
-        let c2 = P::Fp::read(reader)?;
-        Ok(Fp3::new(c0, c1, c2))
     }
 }
 

@@ -6,13 +6,10 @@ use core::{
     str::FromStr,
 };
 use num_traits::{One, Zero};
+use serde::{Deserialize, Serialize};
 use unroll::unroll_for_loops;
 
-use crate::{
-    bytes::{FromBytes, ToBytes},
-    io::{Read, Result as IoResult, Write},
-    uint::{arithmetic as fa, Uint as _U, U256, U320, U384, U768, U832},
-};
+use crate::uint::{arithmetic as fa, Uint as _U, U256, U320, U384, U768, U832};
 
 use super::{FftField, Field, FpParameters, LegendreSymbol, PrimeField, SquareRootField};
 

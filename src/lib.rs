@@ -39,10 +39,6 @@ pub use std::{
 #[macro_use]
 extern crate derivative;
 
-#[cfg_attr(test, macro_use)]
-pub mod bytes;
-pub use self::bytes::*;
-
 pub mod uint;
 pub use self::uint::*;
 
@@ -62,11 +58,8 @@ pub use self::groups::*;
 mod rand;
 pub use self::rand::*;
 
-mod error;
-pub use self::error::*;
-
-mod to_field_vec;
-pub use to_field_vec::ToConstraintField;
+//mod to_field_vec;
+//pub use to_field_vec::ToConstraintField;
 
 pub mod msm;
 pub use self::msm::*;
@@ -86,28 +79,18 @@ pub mod prelude {
 
     pub use num_traits::{One, Zero};
 
-    pub use crate::error::*;
+    pub use crate::Error;
 }
 
-#[cfg(not(feature = "std"))]
-pub mod io;
+pub(crate) type Result<T> = core::result::Result<T, Error>;
 
-#[cfg(feature = "std")]
-pub use std::io;
+#[derive(Debug)]
+pub struct Error(pub &'static str);
 
-#[cfg(feature = "derive")]
-#[allow(unused_imports)]
-#[macro_use]
-extern crate algebra_core_derive;
-
-#[cfg(not(feature = "std"))]
-fn error(_msg: &'static str) -> io::Error {
-    io::Error
-}
-
-#[cfg(feature = "std")]
-fn error(msg: &'static str) -> io::Error {
-    io::Error::new(io::ErrorKind::Other, msg)
+impl core::fmt::Display for Error {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
+        writeln!(f, "Error: {}", self.0)
+    }
 }
 
 /// Returns log2

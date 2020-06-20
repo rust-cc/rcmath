@@ -9,12 +9,9 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use serde::{Deserialize, Serialize};
 
-use crate::{
-    bytes::{FromBytes, ToBytes},
-    io::{Read, Result as IoResult, Write},
-    UniformRand,
-};
+use crate::UniformRand;
 
 use super::{Field, LegendreSymbol, PrimeField, SquareRootField};
 
@@ -34,7 +31,7 @@ pub trait Fp2Parameters: 'static + Send + Sync {
     }
 }
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Default(bound = "P: Fp2Parameters"),
     Hash(bound = "P: Fp2Parameters"),
@@ -279,23 +276,6 @@ impl<P: Fp2Parameters> From<u16> for Fp2<P> {
 impl<P: Fp2Parameters> From<u8> for Fp2<P> {
     fn from(other: u8) -> Self {
         Self::new(other.into(), P::Fp::zero())
-    }
-}
-
-impl<P: Fp2Parameters> ToBytes for Fp2<P> {
-    #[inline]
-    fn write<W: Write>(&self, mut writer: W) -> IoResult<()> {
-        self.c0.write(&mut writer)?;
-        self.c1.write(writer)
-    }
-}
-
-impl<P: Fp2Parameters> FromBytes for Fp2<P> {
-    #[inline]
-    fn read<R: Read>(mut reader: R) -> IoResult<Self> {
-        let c0 = P::Fp::read(&mut reader)?;
-        let c1 = P::Fp::read(reader)?;
-        Ok(Fp2::new(c0, c1))
     }
 }
 

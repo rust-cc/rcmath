@@ -6,11 +6,7 @@ use core::{
 };
 use num_traits::{One, Zero};
 
-use crate::{
-    bytes::{FromBytes, ToBytes},
-    uint::Uint,
-    UniformRand, Vec,
-};
+use crate::{uint::Uint, UniformRand, Vec};
 
 #[macro_use]
 pub mod macros;
@@ -51,9 +47,9 @@ macro_rules! field_new {
 
 /// The interface for a generic field.
 pub trait Field:
-    ToBytes
-    + 'static
-    + FromBytes
+    'static
+    + serde::ser::Serialize
+    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Debug

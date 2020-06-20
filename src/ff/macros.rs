@@ -2,7 +2,7 @@ macro_rules! impl_Fp {
     ($Fp:ident, $FpParameters:ident, $BigInteger:ident, $BigIntegerType:ty, $limbs:expr) => {
         pub trait $FpParameters: FpParameters<BigInt = $BigIntegerType> {}
 
-        #[derive(Derivative)]
+        #[derive(Derivative, Serialize, Deserialize)]
         #[derivative(
             Default(bound = ""),
             Hash(bound = ""),
@@ -10,7 +10,7 @@ macro_rules! impl_Fp {
             Copy(bound = ""),
             Debug(bound = ""),
             PartialEq(bound = ""),
-            Eq(bound = "")
+            Eq(bound = ""),
         )]
         pub struct $Fp<P>(
             pub $BigIntegerType,
@@ -107,7 +107,11 @@ macro_rules! impl_Fp {
                     *b &= m;
                 }
 
-                Self::read(&mut &result_bytes[..]).ok().map(|f| (f, flags))
+                <$BigIntegerType>::from_bytes(&result_bytes[..])
+                    .ok()
+                    .map(|f| Self::from_repr(f))
+                    .flatten()
+                    .map(|f| (f, flags))
             }
 
             #[inline]
@@ -280,24 +284,6 @@ macro_rules! impl_Fp {
         impl_prime_field_from_int!($Fp, u8, $FpParameters);
 
         impl_prime_field_standard_sample!($Fp, $FpParameters);
-
-        impl<P: $FpParameters> ToBytes for $Fp<P> {
-            #[inline]
-            fn write<W: Write>(&self, writer: W) -> IoResult<()> {
-                self.into_repr().write(writer)
-            }
-        }
-
-        impl<P: $FpParameters> FromBytes for $Fp<P> {
-            #[inline]
-            fn read<R: Read>(reader: R) -> IoResult<Self> {
-                $BigInteger::read(reader).and_then(|b|
-                    match $Fp::from_repr(b) {
-                        Some(f) => Ok(f),
-                        None => Err(crate::error("FromBytes::read failed")),
-                    })
-            }
-        }
 
         impl<P: $FpParameters> FromStr for $Fp<P> {
             type Err = ();

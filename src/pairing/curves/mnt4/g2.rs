@@ -1,7 +1,7 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{
-    bytes::ToBytes,
     ff::{Field, Fp2},
-    io::{Result as IoResult, Write},
     pairing::{
         short_weierstrass_jacobian::{GroupAffine, GroupProjective},
         AffineCurve,
@@ -14,7 +14,7 @@ use super::{MNT4Parameters, MNT4};
 pub type G2Affine<P> = GroupAffine<<P as MNT4Parameters>::G2Parameters>;
 pub type G2Projective<P> = GroupProjective<<P as MNT4Parameters>::G2Parameters>;
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Clone(bound = "P: MNT4Parameters"),
     Debug(bound = "P: MNT4Parameters"),
@@ -33,12 +33,6 @@ pub struct G2Prepared<P: MNT4Parameters> {
 impl<P: MNT4Parameters> Default for G2Prepared<P> {
     fn default() -> Self {
         Self::from(G2Affine::<P>::prime_subgroup_generator())
-    }
-}
-
-impl<P: MNT4Parameters> ToBytes for G2Prepared<P> {
-    fn write<W: Write>(&self, _writer: W) -> IoResult<()> {
-        unimplemented!()
     }
 }
 
@@ -117,7 +111,7 @@ pub(super) struct G2ProjectiveExtended<P: MNT4Parameters> {
     pub(crate) t: Fp2<P::Fp2Params>,
 }
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Clone(bound = "P: MNT4Parameters"),
     Debug(bound = "P: MNT4Parameters"),
@@ -131,7 +125,7 @@ pub struct AteDoubleCoefficients<P: MNT4Parameters> {
     pub c_l: Fp2<P::Fp2Params>,
 }
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Clone(bound = "P: MNT4Parameters"),
     Debug(bound = "P: MNT4Parameters"),

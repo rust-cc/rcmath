@@ -1,14 +1,11 @@
-use crate::{
-    bytes::{FromBytes, ToBytes},
-    ff::BitIterator,
-    io::{Read, Result as IoResult, Write},
-    UniformRand, Vec,
-};
 use core::fmt::{Debug, Display};
 use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
+use serde::{Deserialize, Serialize};
+
+use crate::{ff::BitIterator, UniformRand, Vec};
 
 #[macro_use]
 mod macros;
@@ -31,8 +28,8 @@ mod tests;
 
 /// This defines a `Big unsigned integer`.
 pub trait Uint:
-    ToBytes
-    + FromBytes
+    serde::ser::Serialize
+    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Debug
@@ -99,18 +96,9 @@ pub trait Uint:
     /// Returns a vector for wnaf.
     fn find_wnaf(&self) -> Vec<i64>;
 
-    /// Writes this `Uint` as a big endian integer. Always writes
-    /// `(num_bits` / 8) bytes.
-    fn write_le<W: Write>(&self, writer: &mut W) -> IoResult<()> {
-        self.write(writer)
-    }
+    fn from_bytes(bytes: &[u8]) -> crate::Result<Self>;
 
-    /// Reads a big endian integer occupying (`num_bits` / 8) bytes into this
-    /// representation.
-    fn read_le<R: Read>(&mut self, reader: &mut R) -> IoResult<()> {
-        *self = Self::read(reader)?;
-        Ok(())
-    }
+    fn to_bytes(&self) -> Vec<u8>;
 }
 
 pub mod arithmetic {

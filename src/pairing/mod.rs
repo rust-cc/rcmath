@@ -1,5 +1,4 @@
 use crate::{
-    bytes::{FromBytes, ToBytes},
     ff::{Field, PrimeField, SquareRootField},
     groups::Group,
     UniformRand, Vec,
@@ -32,7 +31,7 @@ pub trait PairingEngine: Sized + 'static + Copy + Debug + Sync + Send {
         + Into<Self::G1Prepared>;
 
     /// A G1 element that has been preprocessed for use in a pairing.
-    type G1Prepared: ToBytes + Default + Clone + Send + Sync + Debug + From<Self::G1Affine>;
+    type G1Prepared: Default + Clone + Send + Sync + Debug + From<Self::G1Affine>;
 
     /// The projective representation of an element in G2.
     type G2Projective: ProjectiveCurve<BaseField = Self::Fqe, ScalarField = Self::Fr, Affine = Self::G2Affine>
@@ -47,7 +46,7 @@ pub trait PairingEngine: Sized + 'static + Copy + Debug + Sync + Send {
         + Into<Self::G2Prepared>;
 
     /// A G2 element that has been preprocessed for use in a pairing.
-    type G2Prepared: ToBytes + Default + Clone + Send + Sync + Debug + From<Self::G2Affine>;
+    type G2Prepared: Default + Clone + Send + Sync + Debug + From<Self::G2Affine>;
 
     /// The base field that hosts G1.
     type Fq: PrimeField + SquareRootField;
@@ -93,11 +92,11 @@ pub trait PairingEngine: Sized + 'static + Copy + Debug + Sync + Send {
 /// Projective representation of an elliptic curve point guaranteed to be
 /// in the correct prime order subgroup.
 pub trait ProjectiveCurve:
-    Eq
-    + 'static
+    'static
+    + Eq
     + Sized
-    + ToBytes
-    + FromBytes
+    + serde::ser::Serialize
+    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Default
@@ -203,11 +202,11 @@ pub trait ProjectiveCurve:
 /// Affine representation of an elliptic curve point guaranteed to be
 /// in the correct prime order subgroup.
 pub trait AffineCurve:
-    Eq
-    + 'static
+    'static
+    + Eq
     + Sized
-    + ToBytes
-    + FromBytes
+    + serde::ser::Serialize
+    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Default
