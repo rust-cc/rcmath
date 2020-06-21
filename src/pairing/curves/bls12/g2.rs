@@ -1,5 +1,3 @@
-use serde::{Deserialize, Serialize};
-
 use crate::{
     ff::{BitIterator, Field, Fp2},
     pairing::{
@@ -15,7 +13,7 @@ use super::{Bls12Parameters, TwistType};
 pub type G2Affine<P> = GroupAffine<<P as Bls12Parameters>::G2Parameters>;
 pub type G2Projective<P> = GroupProjective<<P as Bls12Parameters>::G2Parameters>;
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Clone(bound = "P: Bls12Parameters"),
     Debug(bound = "P: Bls12Parameters"),

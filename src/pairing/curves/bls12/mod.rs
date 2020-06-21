@@ -1,5 +1,3 @@
-use core::marker::PhantomData;
-
 use crate::{
     ff::{
         fp12_2over3over2::{Fp12, Fp12Parameters},
@@ -44,7 +42,7 @@ pub use self::{
 
 #[derive(Derivative)]
 #[derivative(Copy, Clone, PartialEq, Eq, Debug, Hash)]
-pub struct Bls12<P: Bls12Parameters>(PhantomData<fn() -> P>);
+pub struct Bls12<P: Bls12Parameters>(core::marker::PhantomData<fn() -> P>);
 
 impl<P: Bls12Parameters> Bls12<P> {
     // Evaluate the line function at point p.

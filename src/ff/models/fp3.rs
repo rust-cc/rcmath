@@ -1,7 +1,6 @@
 use core::{
     cmp::{Ord, Ordering, PartialOrd},
     fmt,
-    marker::PhantomData,
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
     str::FromStr,
 };
@@ -48,19 +47,11 @@ pub struct Fp3<P: Fp3Parameters> {
     pub c0: P::Fp,
     pub c1: P::Fp,
     pub c2: P::Fp,
-    #[derivative(Debug = "ignore")]
-    #[doc(hidden)]
-    pub _parameters: PhantomData<P>,
 }
 
 impl<P: Fp3Parameters> Fp3<P> {
     pub fn new(c0: P::Fp, c1: P::Fp, c2: P::Fp) -> Self {
-        Fp3 {
-            c0,
-            c1,
-            c2,
-            _parameters: PhantomData,
-        }
+        Fp3 { c0, c1, c2 }
     }
 
     pub fn mul_assign_by_fp(&mut self, value: &P::Fp) {
@@ -97,7 +88,6 @@ impl<P: Fp3Parameters> Zero for Fp3<P> {
             c0: P::Fp::zero(),
             c1: P::Fp::zero(),
             c2: P::Fp::zero(),
-            _parameters: PhantomData,
         }
     }
 
@@ -112,7 +102,6 @@ impl<P: Fp3Parameters> One for Fp3<P> {
             c0: P::Fp::one(),
             c1: P::Fp::zero(),
             c2: P::Fp::zero(),
-            _parameters: PhantomData,
         }
     }
 

@@ -207,7 +207,7 @@ macro_rules! uint_impl {
 
                 let mut value = [0u64; $num_limbs];
                 for i in 0..$num_limbs {
-                    let u64_bytes = [0u8; 8];
+                    let mut u64_bytes = [0u8; 8];
                     u64_bytes.copy_from_slice(&bytes[i * 8..(i + 1) * 8]);
                     value[i] = u64::from_le_bytes(u64_bytes);
                 }

@@ -13,9 +13,9 @@ mod macros;
 uint_impl!(U64, 1);
 uint_impl!(U128, 2);
 uint_impl!(U256, 4);
-uint_impl!(U512, 8);
-uint_impl!(U1024, 16);
-uint_impl!(U2048, 32);
+//uint_impl!(U512, 8);
+//uint_impl!(U1024, 16);
+//uint_impl!(U2048, 32);
 //uint_impl!(U4096, 64);
 
 uint_impl!(U320, 5);

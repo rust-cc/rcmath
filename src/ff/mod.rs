@@ -23,24 +23,16 @@ pub use self::models::*;
 #[macro_export]
 macro_rules! field_new {
     ($name:ident, $c0:expr) => {
-        $name {
-            0: $c0,
-            1: core::marker::PhantomData,
-        }
+        $name { 0: $c0 }
     };
     ($name:ident, $c0:expr, $c1:expr $(,)?) => {
-        $name {
-            c0: $c0,
-            c1: $c1,
-            _parameters: core::marker::PhantomData,
-        }
+        $name { c0: $c0, c1: $c1 }
     };
     ($name:ident, $c0:expr, $c1:expr, $c2:expr $(,)?) => {
         $name {
             c0: $c0,
             c1: $c1,
             c2: $c2,
-            _parameters: core::marker::PhantomData,
         }
     };
 }

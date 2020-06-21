@@ -1,6 +1,5 @@
 use core::{
     fmt::{Display, Formatter, Result as FmtResult},
-    marker::PhantomData,
     ops::{Add, AddAssign, MulAssign, Neg, Sub, SubAssign},
 };
 use rand::{
@@ -35,8 +34,6 @@ use rayon::prelude::*;
 pub struct GroupAffine<P: Parameters> {
     pub x: P::BaseField,
     pub y: P::BaseField,
-    #[derivative(Debug = "ignore")]
-    _params: PhantomData<P>,
 }
 
 impl<P: Parameters> Display for GroupAffine<P> {
@@ -47,11 +44,7 @@ impl<P: Parameters> Display for GroupAffine<P> {
 
 impl<P: Parameters> GroupAffine<P> {
     pub fn new(x: P::BaseField, y: P::BaseField) -> Self {
-        Self {
-            x,
-            y,
-            _params: PhantomData,
-        }
+        Self { x, y }
     }
 
     #[must_use]
@@ -278,8 +271,6 @@ pub struct GroupProjective<P: Parameters> {
     pub y: P::BaseField,
     pub t: P::BaseField,
     pub z: P::BaseField,
-    #[derivative(Debug = "ignore")]
-    _params: PhantomData<P>,
 }
 
 impl<P: Parameters> Display for GroupProjective<P> {
@@ -326,13 +317,7 @@ impl<P: Parameters> Default for GroupProjective<P> {
 
 impl<P: Parameters> GroupProjective<P> {
     pub fn new(x: P::BaseField, y: P::BaseField, t: P::BaseField, z: P::BaseField) -> Self {
-        Self {
-            x,
-            y,
-            t,
-            z,
-            _params: PhantomData,
-        }
+        Self { x, y, t, z }
     }
 }
 
@@ -602,7 +587,7 @@ where
     }
 }
 
-#[derive(Derivative)]
+#[derive(Derivative, Serialize, Deserialize)]
 #[derivative(
     Copy(bound = "P: MontgomeryParameters"),
     Clone(bound = "P: MontgomeryParameters"),
@@ -614,8 +599,6 @@ where
 pub struct MontgomeryGroupAffine<P: MontgomeryParameters> {
     pub x: P::BaseField,
     pub y: P::BaseField,
-    #[derivative(Debug = "ignore")]
-    _params: PhantomData<P>,
 }
 
 impl<P: MontgomeryParameters> Display for MontgomeryGroupAffine<P> {
@@ -626,10 +609,6 @@ impl<P: MontgomeryParameters> Display for MontgomeryGroupAffine<P> {
 
 impl<P: MontgomeryParameters> MontgomeryGroupAffine<P> {
     pub fn new(x: P::BaseField, y: P::BaseField) -> Self {
-        Self {
-            x,
-            y,
-            _params: PhantomData,
-        }
+        Self { x, y }
     }
 }

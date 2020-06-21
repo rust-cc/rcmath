@@ -1,7 +1,6 @@
 use core::{
     cmp::{Ord, Ordering, PartialOrd},
     fmt,
-    marker::PhantomData,
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 use num_traits::{One, Zero};
@@ -44,18 +43,11 @@ pub trait Fp2Parameters: 'static + Send + Sync {
 pub struct Fp2<P: Fp2Parameters> {
     pub c0: P::Fp,
     pub c1: P::Fp,
-    #[derivative(Debug = "ignore")]
-    #[doc(hidden)]
-    pub _parameters: PhantomData<P>,
 }
 
 impl<P: Fp2Parameters> Fp2<P> {
     pub fn new(c0: P::Fp, c1: P::Fp) -> Self {
-        Fp2 {
-            c0,
-            c1,
-            _parameters: PhantomData,
-        }
+        Fp2 { c0, c1 }
     }
 
     /// Norm of Fp2 over Fp: Norm(a) = a.x^2 - beta * a.y^2

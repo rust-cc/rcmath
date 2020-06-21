@@ -1,5 +1,4 @@
 use core::ops::Neg;
-use serde::{Deserialize, Serialize};
 
 use crate::{
     ff::{BitIterator, Field},
@@ -16,7 +15,7 @@ use super::{BW6Parameters, TwistType};
 pub type G2Affine<P> = GroupAffine<<P as BW6Parameters>::G2Parameters>;
 pub type G2Projective<P> = GroupProjective<<P as BW6Parameters>::G2Parameters>;
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Clone(bound = "P: BW6Parameters"),
     Debug(bound = "P: BW6Parameters"),

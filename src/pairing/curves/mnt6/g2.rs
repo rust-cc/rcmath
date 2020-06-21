@@ -1,5 +1,3 @@
-use serde::{Deserialize, Serialize};
-
 use crate::{
     ff::{Field, Fp3},
     pairing::{
@@ -14,7 +12,7 @@ use super::{MNT6Parameters, MNT6};
 pub type G2Affine<P> = GroupAffine<<P as MNT6Parameters>::G2Parameters>;
 pub type G2Projective<P> = GroupProjective<<P as MNT6Parameters>::G2Parameters>;
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Clone(bound = "P: MNT6Parameters"),
     Debug(bound = "P: MNT6Parameters"),
@@ -111,7 +109,7 @@ pub(super) struct G2ProjectiveExtended<P: MNT6Parameters> {
     pub(crate) t: Fp3<P::Fp3Params>,
 }
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Clone(bound = "P: MNT6Parameters"),
     Debug(bound = "P: MNT6Parameters"),
@@ -125,7 +123,7 @@ pub struct AteDoubleCoefficients<P: MNT6Parameters> {
     pub c_l: Fp3<P::Fp3Params>,
 }
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Clone(bound = "P: MNT6Parameters"),
     Debug(bound = "P: MNT6Parameters"),

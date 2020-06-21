@@ -1,7 +1,6 @@
 use core::{
     cmp::{Ord, Ordering, PartialOrd},
     fmt,
-    marker::PhantomData,
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
 };
 use num_traits::{One, Zero};
@@ -43,18 +42,11 @@ pub trait Fp4Parameters: 'static + Send + Sync {
 pub struct Fp4<P: Fp4Parameters> {
     pub c0: Fp2<P::Fp2Params>,
     pub c1: Fp2<P::Fp2Params>,
-    #[derivative(Debug = "ignore")]
-    #[doc(hidden)]
-    pub _parameters: PhantomData<P>,
 }
 
 impl<P: Fp4Parameters> Fp4<P> {
     pub fn new(c0: Fp2<P::Fp2Params>, c1: Fp2<P::Fp2Params>) -> Self {
-        Fp4 {
-            c0,
-            c1,
-            _parameters: PhantomData,
-        }
+        Fp4 { c0, c1 }
     }
 
     pub fn unitary_inverse(&self) -> Self {

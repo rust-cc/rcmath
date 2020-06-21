@@ -1,6 +1,5 @@
 use core::{
     fmt::{Display, Formatter, Result as FmtResult},
-    marker::PhantomData,
     ops::{Add, AddAssign, MulAssign, Neg, Sub, SubAssign},
 };
 use rand::{
@@ -30,8 +29,6 @@ pub struct GroupAffine<P: Parameters> {
     pub x: P::BaseField,
     pub y: P::BaseField,
     pub infinity: bool,
-    #[derivative(Debug = "ignore")]
-    _params: PhantomData<P>,
 }
 
 impl<P: Parameters> Display for GroupAffine<P> {
@@ -46,12 +43,7 @@ impl<P: Parameters> Display for GroupAffine<P> {
 
 impl<P: Parameters> GroupAffine<P> {
     pub fn new(x: P::BaseField, y: P::BaseField, infinity: bool) -> Self {
-        Self {
-            x,
-            y,
-            infinity,
-            _params: PhantomData,
-        }
+        Self { x, y, infinity }
     }
 
     pub fn scale_by_cofactor(&self) -> <Self as AffineCurve>::Projective {
@@ -212,7 +204,6 @@ pub struct GroupProjective<P: Parameters> {
     pub x: P::BaseField,
     pub y: P::BaseField,
     pub z: P::BaseField,
-    _params: PhantomData<P>,
 }
 
 impl<P: Parameters> Display for GroupProjective<P> {
@@ -259,12 +250,7 @@ impl<P: Parameters> Default for GroupProjective<P> {
 
 impl<P: Parameters> GroupProjective<P> {
     pub fn new(x: P::BaseField, y: P::BaseField, z: P::BaseField) -> Self {
-        Self {
-            x,
-            y,
-            z,
-            _params: PhantomData,
-        }
+        Self { x, y, z }
     }
 }
 
