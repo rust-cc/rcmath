@@ -5,7 +5,7 @@ use std::path::Path;
 extern crate rustc_version;
 use rustc_version::{version_meta, Channel};
 
-use field_assembly::generate_macro_string;
+//use rcmath::asm::asm_ff::generate_macro_string;
 
 const NUM_LIMBS: usize = 8;
 

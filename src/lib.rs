@@ -94,6 +94,9 @@ impl core::fmt::Display for Error {
     }
 }
 
+#[cfg(feature = "asm")]
+pub mod asm;
+
 /// Returns log2
 pub fn log2(x: usize) -> u32 {
     if x <= 1 {
