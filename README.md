@@ -13,7 +13,7 @@
 #### Auxiliary
 - [x] no-std
 - [x] parallel
-- [ ] serde
+- [x] serde
 - [ ] simd
 - [ ] asm
 
