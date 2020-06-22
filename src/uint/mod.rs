@@ -1,35 +1,13 @@
 use core::fmt::{Debug, Display};
-use rand::{
-    distributions::{Distribution, Standard},
-    Rng,
-};
-use serde::{Deserialize, Serialize};
 
-use crate::{ff::BitIterator, UniformRand, Vec};
+use crate::Vec;
 
 #[macro_use]
-mod macros;
-
-uint_impl!(U64, 1);
-uint_impl!(U128, 2);
-uint_impl!(U256, 4);
-//uint_impl!(U512, 8);
-//uint_impl!(U1024, 16);
-//uint_impl!(U2048, 32);
-//uint_impl!(U4096, 64);
-
-uint_impl!(U320, 5);
-uint_impl!(U384, 6);
-uint_impl!(U768, 12);
-uint_impl!(U832, 13);
-
-#[cfg(test)]
-mod tests;
+pub mod macros;
 
 /// This defines a `Big unsigned integer`.
 pub trait Uint:
-    serde::ser::Serialize
-    + serde::de::DeserializeOwned
+    'static
     + Copy
     + Clone
     + Debug
@@ -40,14 +18,16 @@ pub trait Uint:
     + Send
     + Sized
     + Sync
-    + 'static
-    + UniformRand
     + AsMut<[u64]>
     + AsRef<[u64]>
     + From<u64>
+    + for<'a> From<&'a [u64]>
 {
     /// Number of limbs.
-    const NUM_LIMBS: usize;
+    const LIMBS: usize;
+
+    /// Returns an element chosen uniformly at random using a user-provided RNG.
+    fn random<R: rand_core::RngCore + ?Sized>(rng: &mut R) -> Self;
 
     /// Add another representation to this one, returning the carry bit.
     fn add_nocarry(&mut self, other: &Self) -> bool;
@@ -60,14 +40,14 @@ pub trait Uint:
     fn mul2(&mut self);
 
     /// Performs a leftwise bitshift of this number by some amount.
-    fn muln(&mut self, amt: u32);
+    fn mul(&mut self, amt: u32);
 
     /// Performs a rightwise bitshift of this number, effectively dividing
     /// it by 2.
     fn div2(&mut self);
 
     /// Performs a rightwise bitshift of this number by some amount.
-    fn divn(&mut self, amt: u32);
+    fn div(&mut self, amt: u32);
 
     /// Returns true iff this number is odd.
     fn is_odd(&self) -> bool;
@@ -96,9 +76,26 @@ pub trait Uint:
     /// Returns a vector for wnaf.
     fn find_wnaf(&self) -> Vec<i64>;
 
+    /// From given litter endian bytes to big integer.
     fn from_bytes(bytes: &[u8]) -> crate::Result<Self>;
 
+    /// From given big integer to litter endian bytes.
     fn to_bytes(&self) -> Vec<u8>;
+
+    /// From given hex &str to big integer.
+    fn from_hex(_hex: &str) -> crate::Result<Self> {
+        todo!();
+    }
+
+    /// From given big integer to hex &str
+    fn to_hex<'a>(&self) -> &'a str {
+        todo!();
+    }
+
+    /// From given number &str to parse a big integer.
+    fn parse(_hex: &str) -> crate::Result<Self> {
+        todo!();
+    }
 }
 
 pub mod arithmetic {
@@ -151,3 +148,6 @@ pub mod arithmetic {
         *carry = (tmp >> 64) as u64;
     }
 }
+
+#[cfg(test)]
+mod tests;

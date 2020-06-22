@@ -1,6 +1,8 @@
+#[macro_export]
 macro_rules! uint_impl {
     ($name:ident, $num_limbs:expr) => {
-        #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Hash, Serialize, Deserialize)]
+        #[derive(Copy, Clone, PartialEq, Eq, Debug, Default, Hash)]
+        #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
         pub struct $name(pub [u64; $num_limbs]);
 
         impl $name {
@@ -10,7 +12,16 @@ macro_rules! uint_impl {
         }
 
         impl Uint for $name {
-            const NUM_LIMBS: usize = $num_limbs;
+            const LIMBS: usize = $num_limbs;
+
+            #[inline]
+            fn random<R: rand_core::RngCore + ?Sized>(rng: &mut R) -> Self {
+                let mut repr = [0u64; $num_limbs];
+                for i in 0..$num_limbs {
+                    repr[i] = rng.next_u64();
+                }
+                $name(repr)
+            }
 
             #[inline]
             fn add_nocarry(&mut self, other: &Self) -> bool {
@@ -46,7 +57,7 @@ macro_rules! uint_impl {
             }
 
             #[inline]
-            fn muln(&mut self, mut n: u32) {
+            fn mul(&mut self, mut n: u32) {
                 if n >= 64 * $num_limbs {
                     *self = Self::from(0);
                     return;
@@ -83,7 +94,7 @@ macro_rules! uint_impl {
             }
 
             #[inline]
-            fn divn(&mut self, mut n: u32) {
+            fn div(&mut self, mut n: u32) {
                 if n >= 64 * $num_limbs {
                     *self = Self::from(0);
                     return;
@@ -224,7 +235,7 @@ macro_rules! uint_impl {
             }
         }
 
-        impl Display for $name {
+        impl core::fmt::Display for $name {
             fn fmt(&self, f: &mut ::core::fmt::Formatter<'_>) -> ::core::fmt::Result {
                 for i in self.0.iter().rev() {
                     write!(f, "{:016X}", *i)?;
@@ -255,12 +266,6 @@ macro_rules! uint_impl {
             }
         }
 
-        impl Distribution<$name> for Standard {
-            fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> $name {
-                $name(rng.gen())
-            }
-        }
-
         impl AsMut<[u64]> for $name {
             #[inline]
             fn as_mut(&mut self) -> &mut [u64] {
@@ -281,6 +286,21 @@ macro_rules! uint_impl {
                 let mut repr = Self::default();
                 repr.0[0] = val;
                 repr
+            }
+        }
+
+        impl<'a> From<&'a [u64]> for $name {
+            #[inline]
+            fn from(val: &[u64]) -> $name {
+                let mut repr = [0u64; $num_limbs];
+                let l = val.len();
+                if l >= $num_limbs {
+                    repr.copy_from_slice(&val[0..$num_limbs]);
+                } else {
+                    repr[($num_limbs - l)..$num_limbs].copy_from_slice(&val[..]);
+                }
+
+                Self(repr)
             }
         }
     };

@@ -4,9 +4,8 @@ use core::{
     ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign},
     str::FromStr,
 };
-use num_traits::{One, Zero};
 
-use crate::{uint::Uint, UniformRand, Vec};
+use crate::{uint::Uint, utils::BitIterator, Vec};
 
 #[macro_use]
 pub mod macros;
@@ -40,8 +39,6 @@ macro_rules! field_new {
 /// The interface for a generic field.
 pub trait Field:
     'static
-    + serde::ser::Serialize
-    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Debug
@@ -50,11 +47,8 @@ pub trait Field:
     + Send
     + Sync
     + Eq
-    + One
     + Ord
     + Neg<Output = Self>
-    + UniformRand
-    + Zero
     + Sized
     + Hash
     + Add<Self, Output = Self>
@@ -78,15 +72,8 @@ pub trait Field:
     + core::iter::Product<Self>
     + for<'a> core::iter::Product<&'a Self>
 {
-    /// Returns the characteristic of the field.
-    fn characteristic<'a>() -> &'a [u64];
-
-    /// Returns `self + self`.
-    #[must_use]
-    fn double(&self) -> Self;
-
-    /// Doubles `self` in place.
-    fn double_in_place(&mut self) -> &mut Self;
+    /// Returns an element chosen uniformly at random using a user-provided RNG.
+    fn random<R: rand_core::RngCore + ?Sized>(rng: &mut R) -> Self;
 
     /// Returns a field element if the set of bytes forms a valid field element,
     /// otherwise returns None. This function is primarily intended for sampling
@@ -101,19 +88,38 @@ pub trait Field:
     /// random field elements from a hash-function or RNG output.
     fn from_random_bytes_with_flags(bytes: &[u8]) -> Option<(Self, u8)>;
 
+    /// Returns the zero element of the field, the additive identity.
+    fn zero() -> Self;
+
+    /// Returns the one element of the field, the multiplicative identity.
+    fn one() -> Self;
+
+    /// Returns true iff this element is zero.
+    fn is_zero(&self) -> bool;
+
+    /// Returns true iff this element is one.
+    fn is_one(&self) -> bool;
+
+    /// Returns the characteristic of the field.
+    fn characteristic<'a>() -> &'a [u64];
+
+    /// Returns `self + self`.
+    fn double(&self) -> Self;
+
+    /// Doubles `self` in place.
+    fn double_assign(&mut self) -> &mut Self;
+
     /// Returns `self * self`.
-    #[must_use]
     fn square(&self) -> Self;
 
     /// Squares `self` in place.
-    fn square_in_place(&mut self) -> &mut Self;
+    fn square_assign(&mut self) -> &mut Self;
 
     /// Computes the multiplicative inverse of `self` if `self` is nonzero.
-    #[must_use]
     fn inverse(&self) -> Option<Self>;
 
     // Sets `self` to `self`'s inverse if it exists. Otherwise it is a no-op.
-    fn inverse_in_place(&mut self) -> Option<&mut Self>;
+    fn inverse_assign(&mut self) -> Option<&mut Self>;
 
     /// Exponentiates this element by a power of the base prime modulus via
     /// the Frobenius automorphism.
@@ -121,22 +127,17 @@ pub trait Field:
 
     /// Exponentiates this element by a number represented with `u64` limbs,
     /// least significant limb first.
-    #[must_use]
     fn pow<S: AsRef<[u64]>>(&self, exp: S) -> Self {
         let mut res = Self::one();
 
         let mut found_one = false;
 
         for i in BitIterator::new(exp) {
-            if !found_one {
-                if i {
-                    found_one = true;
-                } else {
-                    continue;
-                }
+            if found_one {
+                res.square_assign();
+            } else {
+                found_one = i;
             }
-
-            res.square_in_place();
 
             if i {
                 res *= self;
@@ -359,43 +360,13 @@ impl LegendreSymbol {
     }
 }
 
-#[derive(Debug)]
-pub struct BitIterator<E> {
-    t: E,
-    n: usize,
-}
-
-impl<E: AsRef<[u64]>> BitIterator<E> {
-    pub fn new(t: E) -> Self {
-        let n = t.as_ref().len() * 64;
-
-        BitIterator { t, n }
-    }
-}
-
-impl<E: AsRef<[u64]>> Iterator for BitIterator<E> {
-    type Item = bool;
-
-    fn next(&mut self) -> Option<bool> {
-        if self.n == 0 {
-            None
-        } else {
-            self.n -= 1;
-            let part = self.n / 64;
-            let bit = self.n - (64 * part);
-
-            Some(self.t.as_ref()[part] & (1 << bit) > 0)
-        }
-    }
-}
-
-use crate::uint::{U256, U320, U384, U768, U832};
+use crate::uint::U256;
 
 impl_field_bigint_conv!(Fp256, U256, Fp256Parameters);
-impl_field_bigint_conv!(Fp320, U320, Fp320Parameters);
-impl_field_bigint_conv!(Fp384, U384, Fp384Parameters);
-impl_field_bigint_conv!(Fp768, U768, Fp768Parameters);
-impl_field_bigint_conv!(Fp832, U832, Fp832Parameters);
+//impl_field_bigint_conv!(Fp320, U320, Fp320Parameters);
+//impl_field_bigint_conv!(Fp384, U384, Fp384Parameters);
+//impl_field_bigint_conv!(Fp768, U768, Fp768Parameters);
+//impl_field_bigint_conv!(Fp832, U832, Fp832Parameters);
 
 pub fn batch_inversion<F: Field>(v: &mut [F]) {
     // Montgomery’s Trick and Fast Implementation of Masked AES

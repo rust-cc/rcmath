@@ -1,5 +1,3 @@
-use serde::{Deserialize, Serialize};
-
 use crate::{
     pairing::{
         short_weierstrass_jacobian::{GroupAffine, GroupProjective},
@@ -13,13 +11,14 @@ use super::MNT6Parameters;
 pub type G1Affine<P> = GroupAffine<<P as MNT6Parameters>::G1Parameters>;
 pub type G1Projective<P> = GroupProjective<<P as MNT6Parameters>::G1Parameters>;
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Clone(bound = "P: MNT6Parameters"),
     Debug(bound = "P: MNT6Parameters"),
     PartialEq(bound = "P: MNT6Parameters"),
     Eq(bound = "P: MNT6Parameters")
 )]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct G1Prepared<P: MNT6Parameters> {
     pub x: P::Fp,
     pub y: P::Fp,

@@ -8,7 +8,6 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
-use serde::{Deserialize, Serialize};
 
 use crate::{Uint, UniformRand};
 
@@ -29,7 +28,7 @@ pub trait Fp4Parameters: 'static + Send + Sync {
     }
 }
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Default(bound = "P: Fp4Parameters"),
     Hash(bound = "P: Fp4Parameters"),
@@ -39,6 +38,7 @@ pub trait Fp4Parameters: 'static + Send + Sync {
     PartialEq(bound = "P: Fp4Parameters"),
     Eq(bound = "P: Fp4Parameters")
 )]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Fp4<P: Fp4Parameters> {
     pub c0: Fp2<P::Fp2Params>,
     pub c1: Fp2<P::Fp2Params>,

@@ -2,7 +2,7 @@ macro_rules! impl_Fp {
     ($Fp:ident, $FpParameters:ident, $BigInteger:ident, $BigIntegerType:ty, $limbs:expr) => {
         pub trait $FpParameters: FpParameters<BigInt = $BigIntegerType> {}
 
-        #[derive(Derivative, Serialize, Deserialize)]
+        #[derive(Derivative)]
         #[derivative(
             Default(bound = ""),
             Hash(bound = ""),
@@ -12,6 +12,7 @@ macro_rules! impl_Fp {
             PartialEq(bound = ""),
             Eq(bound = ""),
         )]
+        #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
         pub struct $Fp<P>(
             pub $BigIntegerType,
             #[derivative(Debug = "ignore")]

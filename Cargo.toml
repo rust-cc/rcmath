@@ -12,27 +12,33 @@ include = ["Cargo.toml", "src", "README.md", "LICENSE-APACHE", "LICENSE-MIT"]
 license = "MIT/Apache-2.0"
 #build = "build.rs"
 
-[lib]
-#proc-macro = true
-
 [dependencies]
+rand_core = "0.5"
 derivative = { version = "2", features = ["use_core"] }
-num-traits = { version = "0.2", default-features = false }
-rand = { version = "0.7", default-features = false }
 rayon = { version = "1", optional = true }
 unroll = { version = "=0.1.4" }
-serde = { version = "1.0", default-features = false, features = ["derive"] }
-quote = { version = "1.0", optional = true }
-syn = { version = "1.0.17", features = ["full"],  optional = true }
+serde = { version = "1", default-features = false, features = ["derive"], optional = true }
+quote = { version = "1", optional = true }
+syn = { version = "1", optional = true }
+
+ff_derive = { path = "ff_derive", optional = true }
 
 [build-dependencies]
 #rustc_version = "0.2"
 
 [dev-dependencies]
 rand_xorshift = "0.2"
+ff_derive = { path = "ff_derive" }
 
 [features]
 default = [ "std" ]
 std = []
 parallel = [ "std", "rayon" ]
 asm = ["quote", "syn"]
+simd = []
+derive = ["ff_derive"]
+serde = []
+
+pairing = []
+bn_256 = ["pairing"]
+bls12_381 = ["pairing"]

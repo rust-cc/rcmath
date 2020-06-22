@@ -18,6 +18,7 @@ pub type G1Projective<P> = GroupProjective<<P as BnParameters>::G1Parameters>;
     PartialEq(bound = "P: BnParameters"),
     Eq(bound = "P: BnParameters")
 )]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct G1Prepared<P: BnParameters>(pub G1Affine<P>);
 
 impl<P: BnParameters> From<G1Affine<P>> for G1Prepared<P> {

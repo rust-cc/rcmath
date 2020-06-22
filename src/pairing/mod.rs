@@ -95,8 +95,6 @@ pub trait ProjectiveCurve:
     'static
     + Eq
     + Sized
-    + serde::ser::Serialize
-    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Default
@@ -205,8 +203,6 @@ pub trait AffineCurve:
     'static
     + Eq
     + Sized
-    + serde::ser::Serialize
-    + serde::de::DeserializeOwned
     + Copy
     + Clone
     + Default

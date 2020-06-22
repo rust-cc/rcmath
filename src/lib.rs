@@ -2,13 +2,16 @@
 #![cfg_attr(use_asm, feature(llvm_asm))]
 #![cfg_attr(not(use_asm), forbid(unsafe_code))]
 #![cfg_attr(use_asm, deny(unsafe_code))]
-
 //#![deny(unused_import_braces, unused_qualifications, trivial_casts)]
 //#![deny(trivial_numeric_casts, variant_size_differences)]
 //#![deny(non_shorthand_field_patterns, unused_attributes, unused_imports)]
 //#![deny(unused_extern_crates, renamed_and_removed_lints, unused_allocation)]
 //#![deny(unused_comparisons, bare_trait_objects, const_err, unused_must_use)]
 //#![deny(unused_mut, unused_unsafe, private_in_public)]
+
+// used unstable features
+#![feature(associated_type_defaults)]
+#![recursion_limit = "1024"]
 
 #[cfg(all(test, not(feature = "std")))]
 #[macro_use]
@@ -40,45 +43,43 @@ pub use std::{
 #[macro_use]
 extern crate derivative;
 
-pub mod uint;
-pub use self::uint::*;
+#[cfg(feature = "serde")]
+extern crate serde_crate;
+
+#[cfg(feature = "derive")]
+#[macro_use]
+extern crate uint_derive;
 
 #[macro_use]
-pub mod ff;
-pub use self::ff::*;
+pub mod uint;
 
-pub mod fft;
-pub use self::fft::*;
+//#[macro_use]
+//pub mod ff;
 
-pub mod pairing;
-pub use self::pairing::*;
+//pub mod fft;
 
-pub mod groups;
-pub use self::groups::*;
+//pub mod group;
 
-mod rand;
-pub use self::rand::*;
+//#[cfg(feature = "pairing")]
+//pub mod pairing;
+
+//mod rand;
+mod utils;
 
 //mod to_field_vec;
-//pub use to_field_vec::ToConstraintField;
 
-pub mod msm;
-pub use self::msm::*;
-
-pub use num_traits::{One, Zero};
+//pub mod msm;
 
 pub mod prelude {
     pub use crate::uint::Uint;
 
-    pub use crate::ff::{Field, FpParameters, PrimeField, SquareRootField};
+    //pub use crate::ff::{Field, FpParameters, PrimeField, SquareRootField};
 
-    pub use crate::groups::Group;
+    //pub use crate::group::Group;
 
-    pub use crate::pairing::{AffineCurve, PairingEngine, ProjectiveCurve};
+    //pub use crate::pairing::{AffineCurve, PairingEngine, ProjectiveCurve};
 
-    pub use crate::rand::UniformRand;
-
-    pub use num_traits::{One, Zero};
+    //pub use crate::rand::UniformRand;
 
     pub use crate::Error;
 }

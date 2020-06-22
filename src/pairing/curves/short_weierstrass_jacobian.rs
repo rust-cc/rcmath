@@ -6,7 +6,6 @@ use rand::{
     distributions::{Distribution, Standard},
     Rng,
 };
-use serde::{Deserialize, Serialize};
 
 use crate::{
     ff::{BitIterator, Field, PrimeField, SquareRootField},
@@ -19,7 +18,7 @@ use super::{flags::SWFlags, SWModelParameters as Parameters};
 #[cfg(feature = "parallel")]
 use rayon::prelude::*;
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Copy(bound = "P: Parameters"),
     Clone(bound = "P: Parameters"),
@@ -28,6 +27,7 @@ use rayon::prelude::*;
     Debug(bound = "P: Parameters"),
     Hash(bound = "P: Parameters")
 )]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct GroupAffine<P: Parameters> {
     pub x: P::BaseField,
     pub y: P::BaseField,
@@ -195,7 +195,7 @@ impl<P: Parameters> Default for GroupAffine<P> {
     }
 }
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative)]
 #[derivative(
     Copy(bound = "P: Parameters"),
     Clone(bound = "P: Parameters"),
@@ -203,6 +203,7 @@ impl<P: Parameters> Default for GroupAffine<P> {
     Debug(bound = "P: Parameters"),
     Hash(bound = "P: Parameters")
 )]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct GroupProjective<P: Parameters> {
     pub x: P::BaseField,
     pub y: P::BaseField,

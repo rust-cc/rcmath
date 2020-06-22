@@ -4,18 +4,19 @@
 *Rust Cryptographic Math Library*
 
 #### Core
-- [x] Big unsigned integer (**uint**): Like: U256, U512, U1024, U2048, U4096.
-- [x] Finite field (**ff**)
-- [x] Group (**group**)
-- [x] Pairing curves (**pairing**)
-- [x] Fast Fourier transform (**fft**)
+- [x] Big unsigned integer (**uint**): [document](./src/uint) Like: U256, U512
+- [x] Group (**group**) [document](./src/group)
+- [x] Finite field (**ff**) [document](./src/ff)
+- [x] Fast Fourier transform (**fft**) [document](./src/fft)
+- [x] Pairing (**pairing**) [document](./src/pairing) - optional feature
+  - [x] Pairing Curves (**pairing/curves**) [document](./src/pairing/curves) - optional feature
 
 #### Auxiliary
 - [x] no-std
-- [x] parallel
 - [x] serde
-- [ ] simd
-- [ ] asm
+- [x] parallel - optional feature
+- [ ] simd - optional feature
+- [ ] asm - optional feature
 
 ## License
 

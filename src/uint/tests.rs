@@ -1,6 +1,9 @@
-use crate::{uint::Uint, UniformRand};
-use rand::SeedableRng;
+use rand_core::SeedableRng;
 use rand_xorshift::XorShiftRng;
+use serde::{Deserialize, Serialize};
+
+use crate::uint::{arithmetic, Uint};
+use crate::utils::BitIterator;
 
 fn uint_arithmetic_test<U: Uint>(a: U, b: U, zero: U) {
     // zero == zero
@@ -39,7 +42,7 @@ fn uint_bits_test<U: Uint>() {
     let mut one = U::from(1u64);
     assert!(one.get_bit(0));
     assert!(!one.get_bit(1));
-    one.muln(5);
+    one.mul(5);
     let thirty_two = one;
     assert!(!thirty_two.get_bit(0));
     assert!(!thirty_two.get_bit(1));
@@ -50,18 +53,17 @@ fn uint_bits_test<U: Uint>() {
 }
 
 fn uint_bytes_test<U: Uint>() {
-    let mut bytes = [0u8; 256];
     let mut rng = XorShiftRng::seed_from_u64(1231275789u64);
-    let x: U = UniformRand::rand(&mut rng);
-    x.write(bytes.as_mut()).unwrap();
-    let y = U::read(bytes.as_ref()).unwrap();
+    let x: U = U::random(&mut rng);
+    let bytes = x.to_bytes();
+    let y = U::from_bytes(bytes.as_ref()).unwrap();
     assert_eq!(x, y);
 }
 
 fn test_uint<U: Uint>(zero: U) {
     let mut rng = XorShiftRng::seed_from_u64(1231275789u64);
-    let a: U = UniformRand::rand(&mut rng);
-    let b: U = UniformRand::rand(&mut rng);
+    let a: U = U::random(&mut rng);
+    let b: U = U::random(&mut rng);
     uint_arithmetic_test(a, b, zero);
     uint_bytes_test::<U>();
     uint_bits_test::<U>();
@@ -69,36 +71,18 @@ fn test_uint<U: Uint>(zero: U) {
 
 #[test]
 fn test_uint64() {
-    use crate::uint::U64 as U;
-    test_uint(U::new([0u64; 1]));
+    crate::uint_impl!(U64, 1);
+    test_uint(U64::new([0u64; 1]));
 }
 
 #[test]
 fn test_uint128() {
-    use crate::uint::U128 as U;
-    test_uint(U::new([0u64; 2]));
+    crate::uint_impl!(U128, 2);
+    test_uint(U128::new([0u64; 2]));
 }
 
 #[test]
 fn test_uint256() {
-    use crate::uint::U256 as U;
-    test_uint(U::new([0u64; 4]));
-}
-
-#[test]
-fn test_uint384() {
-    use crate::uint::U384 as U;
-    test_uint(U::new([0u64; 6]));
-}
-
-#[test]
-fn test_uint768() {
-    use crate::uint::U768 as U;
-    test_uint(U::new([0u64; 12]));
-}
-
-#[test]
-fn test_uint832() {
-    use crate::uint::U832 as U;
-    test_uint(U::new([0u64; 13]));
+    crate::uint_impl!(U256, 4);
+    test_uint(U256::new([0u64; 4]));
 }
