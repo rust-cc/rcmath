@@ -10,7 +10,7 @@
 //#![deny(unused_mut, unused_unsafe, private_in_public)]
 
 // used unstable features
-#![feature(associated_type_defaults)]
+//#![feature(associated_type_defaults)]
 #![recursion_limit = "1024"]
 
 #[cfg(all(test, not(feature = "std")))]
