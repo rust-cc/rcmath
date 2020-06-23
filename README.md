@@ -1,4 +1,4 @@
-[![Latest Version](https://img.shields.io/badge/crates.io-v0.0.0-green.svg)](https://crates.io/crates/rcmath)
+[![Latest Version](https://img.shields.io/badge/crates.io-v0.0.2-green.svg)](https://crates.io/crates/rcmath)
 
 # rcmath
 *Rust Cryptographic Math Library*
@@ -9,14 +9,14 @@
 - [x] Finite field (**ff**) [document](./src/ff)
 - [x] Fast Fourier transform (**fft**) [document](./src/fft)
 - [x] Pairing (**pairing**) [document](./src/pairing) - optional feature
-  - [x] Pairing Curves (**pairing/curves**) [document](./src/pairing/curves) - optional feature
+  - [x] Pairing Curves (**curves**) [document](./src/pairing/curves) - optional feature
 
 #### Auxiliary
-- [x] no-std
-- [x] serde
+- [x] no-std - optional feature
 - [x] parallel - optional feature
 - [ ] simd - optional feature
 - [ ] asm - optional feature
+- [x] [serde](https://crates.io/crates/serde) - optional feature
 
 ## License
 
